@@ -344,6 +344,15 @@ type ReqUser_Question struct {
 	Question string `protobuf:"bytes,5,opt,name=Question,proto3,oneof"`
 }
 
+func (*ReqUser_Question) isResUser_One() {
+	//TODO implement me
+	panic("implement me")
+}
+
+func (*ReqUser_Question) isReqUser_One() {
+
+}
+
 type ReqUser_Answer struct {
 	Answer string `protobuf:"bytes,6,opt,name=Answer,proto3,oneof"`
 }
@@ -353,8 +362,6 @@ func (*ReqUser_UserID) isReqUser_One() {}
 func (*ReqUser_UserName) isReqUser_One() {}
 
 func (*ReqUser_Password) isReqUser_One() {}
-
-func (*ReqUser_Question) isReqUser_One() {}
 
 func (*ReqUser_Answer) isReqUser_One() {}
 

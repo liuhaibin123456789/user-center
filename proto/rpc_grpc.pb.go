@@ -152,7 +152,7 @@ func (c *userCenterClient) CreateAnswer(ctx context.Context, in *ReqUser, opts .
 	return out, nil
 }
 
-// UserCenterServer is the server API for UserCenter service.
+// UserCenterServer is the service API for UserCenter service.
 // All implementations must embed UnimplementedUserCenterServer
 // for forward compatibility
 type UserCenterServer interface {
