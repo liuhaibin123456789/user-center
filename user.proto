@@ -1,0 +1,67 @@
+syntax ="proto3";
+package proto;
+option go_package="./proto";
+
+message UserInfo{
+  int32  UserID=1;
+  string UserName=2;
+  string Password=3;
+  string Phone=4;
+  string Question=5;
+  string Answer =6;
+}
+
+message UserSide{
+  Res res=1;
+  int32 UserId=2;
+  string Phone=3;
+  string Avatar=4;
+  string UserName=5;
+  string UserIntroduction=6;
+  string UserSign =7;
+  string RegisterTime=8;
+}
+
+//请求数据封装：手机号+用户某种信息
+message ReqUser{
+  string Phone=1;
+  oneof One{
+    int32  UserID=2;
+    string UserName=3;
+    string Password=4;
+    string Question=5;
+    string Answer =6;
+  }
+  oneof Two{
+    string OldPassword=7;
+  }
+}
+
+//随机码
+message ResCode{
+  Res res=1;
+  string code=2;
+}
+//token字符串
+message ResToken {
+  Res res=1;
+  string Token=2;
+}
+
+//返回请求失败或成功
+message Res {
+  string OK=1;
+}
+
+message ResUser{
+  Res res=1;
+  oneof One{
+    int32 UserId=2;
+    string UserIntroduction=3;
+    string UserSign=4;
+    string Question=5;
+    string Answer =6;
+  }
+
+}
+

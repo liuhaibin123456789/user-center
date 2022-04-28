@@ -1,0 +1,21 @@
+syntax="proto3";
+package proto;
+option go_package="./proto";
+import "user.proto";
+
+service UserCenter{
+  rpc Login(ReqUser) returns(ResToken);
+  rpc Register(UserInfo) returns(ResToken);
+
+  rpc GetCode(ReqUser) returns(ResCode);
+  rpc GetUser(ReqUser) returns(UserSide);
+  rpc GetIntroduction(ReqUser) returns(ResUser);
+  rpc GetQuestion(ReqUser) returns(ResUser);
+  rpc GetSign(ReqUser) returns(ResUser);
+  rpc GetAnswer(ResUser) returns(ReqUser);
+
+  rpc CreateIntroduction(ReqUser) returns(ResUser);
+  rpc CreateQuestion(ReqUser) returns(ResUser);
+  rpc CreateSign(ReqUser) returns(ResUser);
+  rpc CreateAnswer(ReqUser) returns(ResUser);
+}
