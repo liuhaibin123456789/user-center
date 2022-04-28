@@ -12,7 +12,7 @@ message UserInfo{
 }
 
 message UserSide{
-  Res res=1;
+  string OK=1;
   int32 UserId=2;
   string Phone=3;
   string Avatar=4;
@@ -39,12 +39,12 @@ message ReqUser{
 
 //随机码
 message ResCode{
-  Res res=1;
+  string OK=1;
   string code=2;
 }
 //token字符串
 message ResToken {
-  Res res=1;
+  string OK=1;
   string Token=2;
 }
 
@@ -54,7 +54,7 @@ message Res {
 }
 
 message ResUser{
-  Res res=1;
+  string OK=1;
   oneof One{
     int32 UserId=2;
     string UserIntroduction=3;
