@@ -113,15 +113,3 @@ func SelectUserSide(phone string) (model.UserSide, error) {
 	us.Avatar = dst
 	return us, nil
 }
-
-func SelectOInfo(phone string) (model.UserSide, error) {
-	us := model.UserSide{}
-	if err := tool.GDb.Model(&model.UserSide{}).Where("phone=?", phone).Find(&us).Error; err != nil {
-		return model.UserSide{}, err
-	}
-	//拼接路径
-	fileName := us.Avatar
-	dst := global.UserAvatarPath + fmt.Sprintf("%s", fileName)
-	us.Avatar = dst
-	return us, nil
-}

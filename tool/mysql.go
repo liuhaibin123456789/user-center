@@ -3,6 +3,7 @@ package tool
 import (
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
+	"log"
 	"user-center/model"
 )
 
@@ -10,16 +11,21 @@ var GDb *gorm.DB //gorm的db对象
 
 func LinkMysql() error {
 	//连接数据库，关闭默认启动事务
-	db, err := gorm.Open(mysql.Open("root:123456@tcp(localhost:3306)/gorm_db?charset=utf8mb4&loc=Local&parseTime=true"), &gorm.Config{SkipDefaultTransaction: true})
+	db, err := gorm.Open(mysql.Open("root:123456@tcp(localhost:3306)/user_center?charset=utf8mb4&loc=Local&parseTime=true"), &gorm.Config{SkipDefaultTransaction: true})
 	if err != nil {
 		return err
 	}
 	GDb = db
+	err = createTables()
+	if err != nil {
+		log.Println(err)
+		return err
+	}
 	return nil
 }
 
 // CreateTables 初始化表格
-func CreateTables() error {
+func createTables() error {
 	//校验表是否已经存在，存在就不创建
 	tx := GDb.Begin()
 

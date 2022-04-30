@@ -52,6 +52,10 @@ func (s Service) Register(ctx context.Context, req *proto.UserInfo) (res *proto.
 		Question: req.GetQuestion(),
 		Answer:   req.GetAnswer(),
 	}
+	if u.UserName == "" {
+		u.UserName = tool.RandString()
+	}
+	//log.Println(u)
 	//用户信息校验格式正则校验
 	err = tool.RegexPhone(u.Phone)
 	if err != nil {
@@ -67,7 +71,7 @@ func (s Service) Register(ctx context.Context, req *proto.UserInfo) (res *proto.
 	}
 	//检测随机码
 	rand, err := tool.RedisGetExp(u.Phone)
-	log.Println(rand, err)
+	log.Println(rand)
 	if err != nil {
 		return res, errors.New("the rand code is out of date or you should put into right rand code")
 	}
@@ -78,13 +82,17 @@ func (s Service) Register(ctx context.Context, req *proto.UserInfo) (res *proto.
 	}
 	//密码加密
 	u.Password = tool.Encrypt(u.Password)
-	//用户名为空，获取随机用户名GoString implements fmt.GoStringer and formats t to be printed in Go source code
-	if u.UserName == "" {
-		u.UserName = tool.RandString()
+	us := model.UserSide{
+		UserName:     u.UserName,
+		Phone:        u.Phone,
+		RegisterTime: time.Now().Format("2006-01-02"),
 	}
-	us := model.UserSide{UserName: u.UserName, Phone: u.Phone, RegisterTime: time.Now().Format("2006-01-02")}
 	//添加用户隐私数据以及非隐私数据表
 	err = dao.InsertUser(u, us)
+	if err != nil {
+		return res, err
+	}
+	res.Token, _ = tool.CreateToken(u.Phone)
 	return res, err
 }
 
@@ -194,6 +202,11 @@ func (s Service) GetAnswer(ctx context.Context, req *proto.ReqUser) (res *proto.
 
 func (s Service) CreateIntroduction(ctx context.Context, req *proto.ReqUser) (res *proto.Res, err error) {
 	res = new(proto.Res)
+	//校验数据格式
+	if len(req.GetIntroduction()) > 1000 {
+		res.OK = "fail"
+		return res, errors.New("the introduction is too long, please to write <1000 bytes")
+	}
 
 	err = dao.InsertUserIntroduction(req.GetPhone(), req.GetIntroduction())
 	if err != nil {
@@ -221,7 +234,11 @@ func (s Service) CreateQuestion(ctx context.Context, req *proto.ReqUser) (res *p
 
 func (s Service) CreateSign(ctx context.Context, req *proto.ReqUser) (res *proto.Res, err error) {
 	res = new(proto.Res)
-
+	//校验数据格式
+	if len(req.GetSign()) > 200 {
+		res.OK = "fail"
+		return res, errors.New("the sign is too long, please to write <200 bytes")
+	}
 	err = dao.InsertUserSign(req.GetPhone(), req.GetSign())
 	if err != nil {
 		res.OK = "fail"
@@ -248,6 +265,11 @@ func (s Service) CreateAnswer(ctx context.Context, req *proto.ReqUser) (res *pro
 
 func (s Service) CreateAvatar(ctx context.Context, req *proto.ReqUser) (res *proto.Res, err error) {
 	res = new(proto.Res)
+	//校验数据格式
+	if len(req.GetAvatar()) > 200 {
+		res.OK = "fail"
+		return res, errors.New("the filename is too long, please to write <200 bytes")
+	}
 
 	err = dao.InsertUserAvatar(req.GetPhone(), req.GetAvatar())
 	if err != nil {
@@ -262,8 +284,32 @@ func (s Service) CreateAvatar(ctx context.Context, req *proto.ReqUser) (res *pro
 
 func (s Service) UpdatePwd(ctx context.Context, req *proto.ReqUser) (res *proto.Res, err error) {
 	res = new(proto.Res)
-
-	err = dao.UpdateUserPwd(req.GetPhone(), req.GetPassword())
+	//校验密码格式
+	err = tool.RegexUserNameAndPwd(req.GetPassword())
+	if err != nil {
+		res.OK = "fail"
+		return res, err
+	}
+	err = tool.RegexUserNameAndPwd(req.GetPhone())
+	if err != nil {
+		res.OK = "fail"
+		return res, err
+	}
+	//验证密码是否正确
+	pwd, err := dao.SelectUserPwd(req.GetPhone())
+	if err != nil {
+		res.OK = "fail"
+		return res, err
+	}
+	//加密算法
+	oldPassword := tool.Encrypt(req.GetOldPassword())
+	if pwd != oldPassword {
+		res.OK = "fail"
+		return res, errors.New("the password is wrong")
+	}
+	//加密算法
+	newPassword := tool.Encrypt(req.GetPassword())
+	err = dao.UpdateUserPwd(req.GetPhone(), newPassword)
 	if err != nil {
 		res.OK = "fail"
 		return res, err
