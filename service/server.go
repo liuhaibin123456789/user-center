@@ -14,6 +14,7 @@ import (
 
 type Service struct {
 	proto.UserCenterServer
+	//内嵌接口，可以保障方法实现完成度
 }
 
 // Login 登录服务
@@ -41,7 +42,7 @@ func (s Service) Login(ctx context.Context, req *proto.ReqUser) (res *proto.ResT
 }
 
 //Register 注册服务
-func (s Service) Register(ctx context.Context, req *proto.ReqUser) (res *proto.ResToken, err error) {
+func (s Service) Register(ctx context.Context, req *proto.UserInfo) (res *proto.ResToken, err error) {
 	res = new(proto.ResToken)
 
 	u := model.User{
@@ -132,7 +133,18 @@ func (s Service) GetUser(ctx context.Context, req *proto.ReqUser) (res *proto.Us
 }
 
 func (s Service) GetIntroduction(ctx context.Context, req *proto.ReqUser) (res *proto.ResUser, err error) {
+	res = new(proto.ResUser)
 
+	introduction, err := dao.SelectUserIntroduction(req.GetPhone())
+	if err != nil {
+		res.OK = "fail"
+		return res, err
+	}
+	res.OK = "success"
+	res.One = &proto.ResUser_UserIntroduction{UserIntroduction: introduction}
+	log.Println("(s Service) GetIntroduction: ", res)
+
+	return res, err
 }
 
 func (s Service) GetQuestion(ctx context.Context, req *proto.ReqUser) (res *proto.ResUser, err error) {
@@ -144,31 +156,120 @@ func (s Service) GetQuestion(ctx context.Context, req *proto.ReqUser) (res *prot
 		return res, err
 	}
 	res.OK = "success"
-	//todo
-	res.One = &proto.ReqUser_Question{Question: question}
-	//将req的问题写入res的one里
-
+	res.One = &proto.ResUser_Question{Question: question}
+	//todo viper日志库
+	log.Println("(s Service) GetQuestion: ", res)
 	return res, err
 }
 
 func (s Service) GetSign(ctx context.Context, req *proto.ReqUser) (res *proto.ResUser, err error) {
+	res = new(proto.ResUser)
 
+	question, err := dao.SelectUserSign(req.GetPhone())
+	if err != nil {
+		res.OK = "fail"
+		return res, err
+	}
+	res.OK = "success"
+	res.One = &proto.ResUser_Question{Question: question}
+	log.Println("(s Service) GetSign: ", res)
+
+	return res, err
 }
 
 func (s Service) GetAnswer(ctx context.Context, req *proto.ReqUser) (res *proto.ResUser, err error) {
+	res = new(proto.ResUser)
 
+	answer, err := dao.SelectUserAnswer(req.GetPhone())
+	if err != nil {
+		res.OK = "fail"
+		return res, err
+	}
+	res.OK = "success"
+	res.One = &proto.ResUser_Answer{Answer: answer}
+	log.Println("(s Service) GetAnswer: ", res)
+
+	return res, err
 }
 
-func (s Service) CreateIntroduction(ctx context.Context, req *proto.ReqUser) (res *proto.ResUser, err error) {
+func (s Service) CreateIntroduction(ctx context.Context, req *proto.ReqUser) (res *proto.Res, err error) {
+	res = new(proto.Res)
 
+	err = dao.InsertUserIntroduction(req.GetPhone(), req.GetIntroduction())
+	if err != nil {
+		res.OK = "fail"
+		return res, err
+	}
+	res.OK = "success"
+	log.Println("(s Service) CreateIntroduction: ", res)
+
+	return res, err
 }
-func (s Service) CreateQuestion(ctx context.Context, req *proto.ReqUser) (res *proto.ResUser, err error) {
+func (s Service) CreateQuestion(ctx context.Context, req *proto.ReqUser) (res *proto.Res, err error) {
+	res = new(proto.Res)
 
+	err = dao.InsertUserQuestion(req.GetPhone(), req.GetQuestion())
+	if err != nil {
+		res.OK = "fail"
+		return res, err
+	}
+	res.OK = "success"
+	log.Println("(s Service) CreateQuestion: ", res)
+
+	return res, err
 }
 
-func (s Service) CreateSign(ctx context.Context, req *proto.ReqUser) (res *proto.ResUser, err error) {
+func (s Service) CreateSign(ctx context.Context, req *proto.ReqUser) (res *proto.Res, err error) {
+	res = new(proto.Res)
 
+	err = dao.InsertUserSign(req.GetPhone(), req.GetSign())
+	if err != nil {
+		res.OK = "fail"
+		return res, err
+	}
+	res.OK = "success"
+	log.Println("(s Service) CreateQuestion: ", res)
+
+	return res, err
 }
-func (s Service) CreateAnswer(ctx context.Context, req *proto.ReqUser) (res *proto.ResUser, err error) {
+func (s Service) CreateAnswer(ctx context.Context, req *proto.ReqUser) (res *proto.Res, err error) {
+	res = new(proto.Res)
 
+	err = dao.InsertUserAnswer(req.GetPhone(), req.GetAnswer())
+	if err != nil {
+		res.OK = "fail"
+		return res, err
+	}
+	res.OK = "success"
+	log.Println("(s Service) CreateAnswer: ", res)
+
+	return res, err
+}
+
+func (s Service) CreateAvatar(ctx context.Context, req *proto.ReqUser) (res *proto.Res, err error) {
+	res = new(proto.Res)
+
+	err = dao.InsertUserAvatar(req.GetPhone(), req.GetAvatar())
+	if err != nil {
+		res.OK = "fail"
+		return res, err
+	}
+	res.OK = "success"
+	log.Println("(s Service) CreateAvatar: ", res)
+
+	return res, err
+}
+
+func (s Service) UpdatePwd(ctx context.Context, req *proto.ReqUser) (res *proto.Res, err error) {
+	res = new(proto.Res)
+
+	err = dao.UpdateUserPwd(req.GetPhone(), req.GetPassword())
+	if err != nil {
+		res.OK = "fail"
+		return res, err
+	}
+	res.OK = "success"
+	log.Println("(s Service) UpdatePwd: ", res)
+
+	return res, err
 }

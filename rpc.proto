@@ -2,7 +2,7 @@ syntax="proto3";
 package proto;
 option go_package="./proto";
 import "user.proto";
-
+//本文件最好放在项目目录下，这样生成代码时，不用切换到本文件所在目录下了
 service UserCenter{
   rpc Login(ReqUser) returns(ResToken);
   rpc Register(UserInfo) returns(ResToken);
@@ -12,10 +12,12 @@ service UserCenter{
   rpc GetIntroduction(ReqUser) returns(ResUser);
   rpc GetQuestion(ReqUser) returns(ResUser);
   rpc GetSign(ReqUser) returns(ResUser);
-  rpc GetAnswer(ResUser) returns(ReqUser);
+  rpc GetAnswer(ReqUser) returns(ResUser);
 
-  rpc CreateIntroduction(ReqUser) returns(ResUser);
-  rpc CreateQuestion(ReqUser) returns(ResUser);
-  rpc CreateSign(ReqUser) returns(ResUser);
-  rpc CreateAnswer(ReqUser) returns(ResUser);
+  rpc CreateIntroduction(ReqUser) returns(Res);
+  rpc CreateQuestion(ReqUser) returns(Res);
+  rpc CreateSign(ReqUser) returns(Res);
+  rpc CreateAnswer(ReqUser) returns(Res);
+  rpc CreateAvatar(ReqUser) returns(Res);
+  rpc UpdatePwd(ReqUser) returns(Res);
 }

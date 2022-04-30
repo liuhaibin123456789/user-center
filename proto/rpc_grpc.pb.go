@@ -29,11 +29,13 @@ type UserCenterClient interface {
 	GetIntroduction(ctx context.Context, in *ReqUser, opts ...grpc.CallOption) (*ResUser, error)
 	GetQuestion(ctx context.Context, in *ReqUser, opts ...grpc.CallOption) (*ResUser, error)
 	GetSign(ctx context.Context, in *ReqUser, opts ...grpc.CallOption) (*ResUser, error)
-	GetAnswer(ctx context.Context, in *ResUser, opts ...grpc.CallOption) (*ReqUser, error)
-	CreateIntroduction(ctx context.Context, in *ReqUser, opts ...grpc.CallOption) (*ResUser, error)
-	CreateQuestion(ctx context.Context, in *ReqUser, opts ...grpc.CallOption) (*ResUser, error)
-	CreateSign(ctx context.Context, in *ReqUser, opts ...grpc.CallOption) (*ResUser, error)
-	CreateAnswer(ctx context.Context, in *ReqUser, opts ...grpc.CallOption) (*ResUser, error)
+	GetAnswer(ctx context.Context, in *ReqUser, opts ...grpc.CallOption) (*ResUser, error)
+	CreateIntroduction(ctx context.Context, in *ReqUser, opts ...grpc.CallOption) (*Res, error)
+	CreateQuestion(ctx context.Context, in *ReqUser, opts ...grpc.CallOption) (*Res, error)
+	CreateSign(ctx context.Context, in *ReqUser, opts ...grpc.CallOption) (*Res, error)
+	CreateAnswer(ctx context.Context, in *ReqUser, opts ...grpc.CallOption) (*Res, error)
+	CreateAvatar(ctx context.Context, in *ReqUser, opts ...grpc.CallOption) (*Res, error)
+	UpdatePwd(ctx context.Context, in *ReqUser, opts ...grpc.CallOption) (*Res, error)
 }
 
 type userCenterClient struct {
@@ -107,8 +109,8 @@ func (c *userCenterClient) GetSign(ctx context.Context, in *ReqUser, opts ...grp
 	return out, nil
 }
 
-func (c *userCenterClient) GetAnswer(ctx context.Context, in *ResUser, opts ...grpc.CallOption) (*ReqUser, error) {
-	out := new(ReqUser)
+func (c *userCenterClient) GetAnswer(ctx context.Context, in *ReqUser, opts ...grpc.CallOption) (*ResUser, error) {
+	out := new(ResUser)
 	err := c.cc.Invoke(ctx, "/proto.UserCenter/GetAnswer", in, out, opts...)
 	if err != nil {
 		return nil, err
@@ -116,8 +118,8 @@ func (c *userCenterClient) GetAnswer(ctx context.Context, in *ResUser, opts ...g
 	return out, nil
 }
 
-func (c *userCenterClient) CreateIntroduction(ctx context.Context, in *ReqUser, opts ...grpc.CallOption) (*ResUser, error) {
-	out := new(ResUser)
+func (c *userCenterClient) CreateIntroduction(ctx context.Context, in *ReqUser, opts ...grpc.CallOption) (*Res, error) {
+	out := new(Res)
 	err := c.cc.Invoke(ctx, "/proto.UserCenter/CreateIntroduction", in, out, opts...)
 	if err != nil {
 		return nil, err
@@ -125,8 +127,8 @@ func (c *userCenterClient) CreateIntroduction(ctx context.Context, in *ReqUser, 
 	return out, nil
 }
 
-func (c *userCenterClient) CreateQuestion(ctx context.Context, in *ReqUser, opts ...grpc.CallOption) (*ResUser, error) {
-	out := new(ResUser)
+func (c *userCenterClient) CreateQuestion(ctx context.Context, in *ReqUser, opts ...grpc.CallOption) (*Res, error) {
+	out := new(Res)
 	err := c.cc.Invoke(ctx, "/proto.UserCenter/CreateQuestion", in, out, opts...)
 	if err != nil {
 		return nil, err
@@ -134,8 +136,8 @@ func (c *userCenterClient) CreateQuestion(ctx context.Context, in *ReqUser, opts
 	return out, nil
 }
 
-func (c *userCenterClient) CreateSign(ctx context.Context, in *ReqUser, opts ...grpc.CallOption) (*ResUser, error) {
-	out := new(ResUser)
+func (c *userCenterClient) CreateSign(ctx context.Context, in *ReqUser, opts ...grpc.CallOption) (*Res, error) {
+	out := new(Res)
 	err := c.cc.Invoke(ctx, "/proto.UserCenter/CreateSign", in, out, opts...)
 	if err != nil {
 		return nil, err
@@ -143,8 +145,8 @@ func (c *userCenterClient) CreateSign(ctx context.Context, in *ReqUser, opts ...
 	return out, nil
 }
 
-func (c *userCenterClient) CreateAnswer(ctx context.Context, in *ReqUser, opts ...grpc.CallOption) (*ResUser, error) {
-	out := new(ResUser)
+func (c *userCenterClient) CreateAnswer(ctx context.Context, in *ReqUser, opts ...grpc.CallOption) (*Res, error) {
+	out := new(Res)
 	err := c.cc.Invoke(ctx, "/proto.UserCenter/CreateAnswer", in, out, opts...)
 	if err != nil {
 		return nil, err
@@ -152,7 +154,25 @@ func (c *userCenterClient) CreateAnswer(ctx context.Context, in *ReqUser, opts .
 	return out, nil
 }
 
-// UserCenterServer is the service API for UserCenter service.
+func (c *userCenterClient) CreateAvatar(ctx context.Context, in *ReqUser, opts ...grpc.CallOption) (*Res, error) {
+	out := new(Res)
+	err := c.cc.Invoke(ctx, "/proto.UserCenter/CreateAvatar", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *userCenterClient) UpdatePwd(ctx context.Context, in *ReqUser, opts ...grpc.CallOption) (*Res, error) {
+	out := new(Res)
+	err := c.cc.Invoke(ctx, "/proto.UserCenter/UpdatePwd", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+// UserCenterServer is the server API for UserCenter service.
 // All implementations must embed UnimplementedUserCenterServer
 // for forward compatibility
 type UserCenterServer interface {
@@ -163,11 +183,13 @@ type UserCenterServer interface {
 	GetIntroduction(context.Context, *ReqUser) (*ResUser, error)
 	GetQuestion(context.Context, *ReqUser) (*ResUser, error)
 	GetSign(context.Context, *ReqUser) (*ResUser, error)
-	GetAnswer(context.Context, *ResUser) (*ReqUser, error)
-	CreateIntroduction(context.Context, *ReqUser) (*ResUser, error)
-	CreateQuestion(context.Context, *ReqUser) (*ResUser, error)
-	CreateSign(context.Context, *ReqUser) (*ResUser, error)
-	CreateAnswer(context.Context, *ReqUser) (*ResUser, error)
+	GetAnswer(context.Context, *ReqUser) (*ResUser, error)
+	CreateIntroduction(context.Context, *ReqUser) (*Res, error)
+	CreateQuestion(context.Context, *ReqUser) (*Res, error)
+	CreateSign(context.Context, *ReqUser) (*Res, error)
+	CreateAnswer(context.Context, *ReqUser) (*Res, error)
+	CreateAvatar(context.Context, *ReqUser) (*Res, error)
+	UpdatePwd(context.Context, *ReqUser) (*Res, error)
 	mustEmbedUnimplementedUserCenterServer()
 }
 
@@ -196,20 +218,26 @@ func (UnimplementedUserCenterServer) GetQuestion(context.Context, *ReqUser) (*Re
 func (UnimplementedUserCenterServer) GetSign(context.Context, *ReqUser) (*ResUser, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetSign not implemented")
 }
-func (UnimplementedUserCenterServer) GetAnswer(context.Context, *ResUser) (*ReqUser, error) {
+func (UnimplementedUserCenterServer) GetAnswer(context.Context, *ReqUser) (*ResUser, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetAnswer not implemented")
 }
-func (UnimplementedUserCenterServer) CreateIntroduction(context.Context, *ReqUser) (*ResUser, error) {
+func (UnimplementedUserCenterServer) CreateIntroduction(context.Context, *ReqUser) (*Res, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method CreateIntroduction not implemented")
 }
-func (UnimplementedUserCenterServer) CreateQuestion(context.Context, *ReqUser) (*ResUser, error) {
+func (UnimplementedUserCenterServer) CreateQuestion(context.Context, *ReqUser) (*Res, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method CreateQuestion not implemented")
 }
-func (UnimplementedUserCenterServer) CreateSign(context.Context, *ReqUser) (*ResUser, error) {
+func (UnimplementedUserCenterServer) CreateSign(context.Context, *ReqUser) (*Res, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method CreateSign not implemented")
 }
-func (UnimplementedUserCenterServer) CreateAnswer(context.Context, *ReqUser) (*ResUser, error) {
+func (UnimplementedUserCenterServer) CreateAnswer(context.Context, *ReqUser) (*Res, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method CreateAnswer not implemented")
+}
+func (UnimplementedUserCenterServer) CreateAvatar(context.Context, *ReqUser) (*Res, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method CreateAvatar not implemented")
+}
+func (UnimplementedUserCenterServer) UpdatePwd(context.Context, *ReqUser) (*Res, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method UpdatePwd not implemented")
 }
 func (UnimplementedUserCenterServer) mustEmbedUnimplementedUserCenterServer() {}
 
@@ -351,7 +379,7 @@ func _UserCenter_GetSign_Handler(srv interface{}, ctx context.Context, dec func(
 }
 
 func _UserCenter_GetAnswer_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(ResUser)
+	in := new(ReqUser)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -363,7 +391,7 @@ func _UserCenter_GetAnswer_Handler(srv interface{}, ctx context.Context, dec fun
 		FullMethod: "/proto.UserCenter/GetAnswer",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(UserCenterServer).GetAnswer(ctx, req.(*ResUser))
+		return srv.(UserCenterServer).GetAnswer(ctx, req.(*ReqUser))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -440,6 +468,42 @@ func _UserCenter_CreateAnswer_Handler(srv interface{}, ctx context.Context, dec 
 	return interceptor(ctx, in, info, handler)
 }
 
+func _UserCenter_CreateAvatar_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ReqUser)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(UserCenterServer).CreateAvatar(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/proto.UserCenter/CreateAvatar",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(UserCenterServer).CreateAvatar(ctx, req.(*ReqUser))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _UserCenter_UpdatePwd_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ReqUser)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(UserCenterServer).UpdatePwd(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/proto.UserCenter/UpdatePwd",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(UserCenterServer).UpdatePwd(ctx, req.(*ReqUser))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // UserCenter_ServiceDesc is the grpc.ServiceDesc for UserCenter service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -494,6 +558,14 @@ var UserCenter_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "CreateAnswer",
 			Handler:    _UserCenter_CreateAnswer_Handler,
+		},
+		{
+			MethodName: "CreateAvatar",
+			Handler:    _UserCenter_CreateAvatar_Handler,
+		},
+		{
+			MethodName: "UpdatePwd",
+			Handler:    _UserCenter_UpdatePwd_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

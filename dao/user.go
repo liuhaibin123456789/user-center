@@ -66,12 +66,36 @@ func SelectUserQuestion(phone string) (string, error) {
 	return question, nil
 }
 
+func SelectUserSign(phone string) (string, error) {
+	var sign string
+	if err := tool.GDb.Model(&model.User{}).Select("question").Where("phone=?", phone).Find(&sign).Error; err != nil {
+		return "", err
+	}
+	return sign, nil
+}
+
+func SelectUserIntroduction(phone string) (string, error) {
+	var introduction string
+	if err := tool.GDb.Model(&model.UserSide{}).Select("user_introduction").Where("phone=?", phone).Find(&introduction).Error; err != nil {
+		return "", err
+	}
+	return introduction, nil
+}
+
 func InsertUserIntroduction(phone, introduction string) error {
 	return tool.GDb.Model(&model.UserSide{}).Where("phone=?", phone).Update("user_introduction", introduction).Error
 }
 
+func InsertUserQuestion(phone, question string) error {
+	return tool.GDb.Model(&model.User{}).Where("phone=?", phone).Update("question", question).Error
+}
+
 func InsertUserSign(phone, sign string) error {
 	return tool.GDb.Model(&model.UserSide{}).Where("phone=?", phone).Update("user_sign", sign).Error
+}
+
+func InsertUserAnswer(phone, answer string) error {
+	return tool.GDb.Model(&model.User{}).Where("phone=?", phone).Update("answer", answer).Error
 }
 
 func InsertUserAvatar(phone, filename string) error {

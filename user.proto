@@ -31,9 +31,12 @@ message ReqUser{
     string Password=4;
     string Question=5;
     string Answer =6;
+    string Introduction=7;
+    string Sign=8;
+    string Avatar=9;
   }
   oneof Two{
-    string OldPassword=7;
+    string OldPassword=10;
   }
 }
 
@@ -56,11 +59,14 @@ message Res {
 message ResUser{
   string OK=1;
   oneof One{
-    int32 UserId=2;
-    string UserIntroduction=3;
-    string UserSign=4;
-    string Question=5;
-    string Answer =6;
+    int32  UserId=2;
+    string UserName=3;
+    string Password=4;
+    string Avatar=5;
+    string UserIntroduction=6;
+    string UserSign=7;
+    string Question=8;
+    string Answer =9;
   }
 }
 
