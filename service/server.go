@@ -13,7 +13,7 @@ import (
 )
 
 type Service struct {
-	proto.UserCenterServer
+	proto.UnimplementedUserCenterServer
 	//内嵌接口，可以保障方法实现完成度
 }
 
